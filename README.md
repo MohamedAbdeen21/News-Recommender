@@ -13,9 +13,9 @@ The project uses:
 The project was challenging on so many levels. Reducing the scraping time of hundreds of articles to a few minutes was the major challenge that led me to choose scrapy for the project, and scrapy took me some time to learn. The ability to continue working across the different OS on my device led me to Docker and Docker-compose; it saved me alot of trouble that I figured that I would include it in the final version of the project.
 
 Features-to-implement:
-- [] Create a better data model: The current data model only cares about saving the articles. A better model would be needed if the project was to be implemented in an application.
-- [] Create an API for the database: As I mentioned earlier, this will make integrating the project easier. 
-- [] Create a web frontend: I had a very basic frontend made with HTML, CSS and Flask in the [un-dockerized version](https://github.com/MohamedAbdeen21/NewNews) of the repo, but I decided not to include it in here until it is more mature.
+- &#9744; Create a better data model: The current data model only cares about saving the articles. A better model would be needed if the project was to be implemented in an application.
+- &#9744; Create an API for the database: As I mentioned earlier, this will make integrating the project easier. 
+- &#9744; Create a web frontend: I had a very basic frontend made with HTML, CSS and Flask in the [un-dockerized version](https://github.com/MohamedAbdeen21/NewNews) of the repo, but I decided not to include it in here until it is more mature.
 
 ---
 
@@ -38,7 +38,7 @@ With some simple knowledge in docker, you can change these login credentials and
 
 ## Credits
 
-These are some of the people helped me through their content to create this project:
+These are some of the people who helped me through their content to create this project:
 - Scrapy: John Watson Rooney [YouTube](https://www.youtube.com/c/JohnWatsonRooney)
 - Docker and docker-compose: [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/?originalSubdomain=de) from [DataTalksClub](https://www.youtube.com/channel/UCDvErgK0j5ur3aLgn6U-LqQ) 
 
