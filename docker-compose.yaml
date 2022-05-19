@@ -270,6 +270,7 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+
   pgdatabase:
     image: postgres:13
     environment:
@@ -278,10 +279,9 @@ services:
       - POSTGRES_DB=newsscraper
     volumes:
       - "./postgres_data:/var/lib/postgresql/data:rw"
-    ports:
-      - "5433:5433"
-        #    logging:
-        #        driver: none
+    logging:
+      driver: none
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -289,5 +289,14 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - "8081:80"
+
+  api:
+    build: api/.
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - pgdatabase
+
 volumes:
   postgres-db-volume: 

@@ -6,3 +6,5 @@
 !/logs/.gitkeep
 /data/*
 !/data/.gitkeep
+/access_token.txt
+/test.py
