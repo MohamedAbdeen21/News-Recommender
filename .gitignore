@@ -1,0 +1,9 @@
+/postgres_data/*
+!/postgres_data/.gitkeep
+/plugins/*
+!/plugins/.gitkeep
+/airflow/*
+/logs/*
+!/logs/.gitkeep
+/data/*
+!/data/.gitkeep
