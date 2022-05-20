@@ -24,6 +24,7 @@ class XmlscraperPipeline:
                 tags TEXT,
                 count INT DEFAULT -1,
                 date DATE DEFAULT CURRENT_DATE,
+                summary TEXT,
                 CONSTRAINT unique_url UNIQUE (url),
                 CONSTRAINT unique_sk UNIQUE (sk)
                 )
@@ -51,7 +52,6 @@ class XmlscraperPipeline:
             print('Item {} had no key {}'.format(item['url'], repr(exception)))
         except pg.IntegrityError as exception:
             self.cur.execute("ROLLBACK")
-            self.con.commit()
             print('Pipeline raised a {}'.format(repr(exception)))
         return item
 

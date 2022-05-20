@@ -1,7 +1,9 @@
 FROM python:3.10
 
-RUN pip install flask_restful flask flask-sqlalchemy psycopg2-binary
+WORKDIR /code
 
-COPY api.py /api.py
+RUN pip install fastapi[all] psycopg2-binary
 
-CMD ["python3", "/api.py"]
+COPY . /code/app
+
+CMD ["uvicorn", "app.api2:app", "--host", "0.0.0.0"]
