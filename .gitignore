@@ -12,6 +12,3 @@
 /test.py
 /vennv/**
 **/__pycache__/
-/dags/*
-/plugins/*
-/logs/*
