@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+      <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+      <py-env>
+        - requests
+      </py-env>
+    </head>
+<body>
+    <h1>Let's plot random numbers</h1>
+    <div id="plot"></div>
+    <py-script>
+    import requests
+    response = requests.get("https://0.0.0.0:8000/articles/2022-05-22",timeout = 5)
+    result = response
+    response.close()
+    </py-script>
+  </body>
+</html>
