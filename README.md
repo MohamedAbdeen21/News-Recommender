@@ -14,7 +14,7 @@ The project was challenging on so many levels. Reducing the scraping time of hun
 
 Features-to-implement:
 - &#9744; Create a better data model: The current data model only cares about saving the articles. A better model would be needed if the project was to be implemented in an application.
-- &#9744; Create an API for the database: As I mentioned earlier, this will make integrating the project easier. 
+- &#9744; Create an API for the database: As I mentioned earlier, this will make integrating the project easier. (Almost done)
 - &#9744; Create a web frontend: I had a very basic frontend made with HTML, CSS and Flask in the [un-dockerized version](https://github.com/MohamedAbdeen21/NewNews) of the repo, but I decided not to include it in here until it is more mature.
 
 ---
@@ -35,6 +35,8 @@ It will also start Airflow UI on port 8080, use login credentials `airflow` and 
 The scraped data will persist even after system reboot.
 
 With some simple knowledge in docker, you can change these login credentials and port numbers easily.
+
+Note: You might need to `chown` of the `data/pgadmin` directory to `5050:5050` to be able to start `pgadmin` service. Changes like copying the project or adding it to github might require you to `chown` of the entire directory `.` to your user. Don't forget the `-R` flag.
 
 ## Credits
 
