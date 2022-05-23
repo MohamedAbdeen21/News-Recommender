@@ -10,9 +10,9 @@ def initialize_db():
                     title TEXT,
                     text TEXT,
                     tags TEXT,
+                    summary TEXT,
                     count INT DEFAULT -1,
                     date DATE DEFAULT CURRENT_DATE,
-                    summary TEXT,
                     CONSTRAINT unique_url UNIQUE (url),
                     CONSTRAINT unique_sk UNIQUE (sk)
                     )''')

@@ -7,26 +7,29 @@
 # useful for handling different item types with a single interface
 # from itemadapter import ItemAdapter
 
+from ast import Raise
 import psycopg2 as pg
+import requests
 
 class XmlscraperPipeline:
-
-    def open_spider(self,spider):
-        self.con = pg.connect("host=pgdatabase dbname=newsscraper port=5432 user=root password=root")
-        self.cur = self.con.cursor()
-
     def process_item(self, item, spider):
         try:
-            self.cur.execute("""INSERT INTO articles(url,title,text,count,date,tags) VALUES(%s,%s,%s,%s,%s,%s)""",
-                        [item['url'],item['title'],item['text'],item['count'],item['date'],item['tags']])
-            self.con.commit()
-            print('Added article')
-        except KeyError as exception:
-            print('Item {} had no key {}'.format(item['url'], repr(exception)))
-        except pg.IntegrityError as exception:
-            self.cur.execute("ROLLBACK")
-            print('Pipeline raised a {}'.format(repr(exception)))
-        return item
-
-    def close_spider(self,spider):
-        self.con.close()
+            response = requests.post('http://api:8000/articles/',
+                        json = {
+                            "url":item["url"],
+                            "text": item["text"],
+                            "count": item["count"],
+                            "title": item["title"],
+                            "tags": item["tags"],
+                            "date": item["date"],
+                            "summary": "dummy text"
+                            })
+            if response.status_code == 400:
+                raise KeyError(f'Error {response.status_code} for url {item["url"]}')
+            elif response.status_code == 409:
+                raise ValueError(f'Duplicate entry found for url: {item["url"]}')
+        except (KeyError, ValueError) as exception:
+            print(f'{repr(exception)}')
+            return item
+        except Exception as e:
+            print(f'{repr(e)}')

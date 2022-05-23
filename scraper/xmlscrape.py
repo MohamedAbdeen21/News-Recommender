@@ -44,7 +44,7 @@ class XmlscrapeSpider(scrapy.Spider):
                     loader.add_value('url', entry['link'])
                     loader.add_value('title', entry['title'])
                     loader.add_css('text', "body p::text")
-                    loader.add_value('date',time)
+                    loader.add_value('date',properties.today_string)
                     loader.add_css('count', "body p::text" )
                     if 'tags' in entry.keys():
                         loader.add_value('tags', [tag.get('term') for tag in entry['tags']])

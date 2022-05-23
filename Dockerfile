@@ -1,7 +1,7 @@
 FROM python:3.10
 FROM ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.3.0}
 
-RUN pip install scrapy psycopg2-binary feedparser python-dateutil
+RUN pip install scrapy psycopg2-binary feedparser python-dateutil requests
 RUN scrapy startproject xmlscraper
 
 COPY scraper/xmlscrape.py /opt/airflow/xmlscraper/xmlscraper/spiders/xmlscrape.py

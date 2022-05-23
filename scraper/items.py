@@ -13,7 +13,7 @@ words_to_delete = [
     'To revist this article, visit My Profile, then']
 def clean_text(text):
     if any(word == text for word in words_to_delete): return ''
-    return re.sub('&quot|\t|\n|\r|"|\||  ',"",text)
+    return re.sub('&quot|\t|\n|\r|"|\||  ',"",text).strip() # Join adds whitespaces by default, no need for whitespaces at the ends
 
 class XmlscraperItem(scrapy.Item):
     url = scrapy.Field(output_processor = TakeFirst())

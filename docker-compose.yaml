@@ -291,7 +291,8 @@ services:
       - "8081:80"
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
-
+    depends_on:
+      - pgdatabase
 
   api:
     build: api/.

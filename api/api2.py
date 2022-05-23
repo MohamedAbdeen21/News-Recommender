@@ -1,81 +1,32 @@
-from fastapi import FastAPI, Response, status, HTTPException
-from fastapi.responses import RedirectResponse
-from time import sleep
-import api.database as database
-import api.schemas as schemas
+from flask import Flask, request
+from flask_restful import Resource, Api
+import psycopg2 as pg
+from psycopg2.extensions import AsIs
 
-app = FastAPI()
+class Result:
+    def __new__(self,query, offset):
+        self.keys = ['sk','url','title','text','count','tags']
 
-while True:
-    try:
-        con, cur = database.initialize_db()
-        break
-    except:
-        for i in range(3, 0,-1):
-            print(f"Connection failed ... Retrying in {i}", end = '\r')
-            sleep(1)
-        print('')
+        self.con = pg.connect("host=pgdatabase dbname=newsscraper port=5432 user=root password=root")
+        self.cur = self.con.cursor()
+        self.result = self.cur.execute("SELECT %s FROM articles WHERE date=%s OFFSET %s LIMIT 5",(AsIs(",".join(self.keys)),query,offset))
+        self.result = self.cur.fetchall()
+        self.k = 0
+        self.dict_result = {}
+        for values in self.result:
+            self.k += 1
+            self.dict_result[f"item {self.k}"]= dict(zip(self.keys,values))
+        return self.dict_result
 
-@app.get('/')
-def this_page():
-    return RedirectResponse("/docs")
+app = Flask(__name__)
+api = Api(app)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
-#@app.get('/articles/', status_code=status.HTTP_200_OK)
-#def get_posts():
-#    return {"data":"this is the first article"}
+class Article(Resource):
+    def get(self,date,offset):
+        return Result(date,offset), 200
 
-@app.get('/articles/{date}',response_model=schemas.Articles)
-def get_articles_by_day(date: str):
+api.add_resource(Article, "/Article/<string:date>/<int:offset>")
 
-    if not schemas.valid_date(date):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-                            detail = "Invalid date, make sure you follow the format 'YYYY-MM-DD' and using a valid date")
-
-    cur.execute('''SELECT url, title, text, count, date FROM articles WHERE date = %s''',(date,))
-    return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
-
-@app.post('/articles/',status_code=status.HTTP_201_CREATED)
-def post_summary(summary: schemas.Summary):
-    cur.execute('''UPDATE articles SET summary=%s WHERE url = %s RETURNING *''',(summary.summary,summary.url))
-    con.commit()
-    result = cur.fetchone()
-    if result == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail = f"url {summary.url} not in database")
-    return result
-
-@app.post('/')
-def get_recommendations(cookie: schemas.Cookie):
-    # 
-    return {"data":f"{cookie.cookieid}"}
-
-@app.post('/users/', status_code=status.HTTP_201_CREATED, response_model= schemas.RatingModel)
-def post_rating(rating: schemas.UserRating):
-    
-    # Get userId associated with cookieId
-    cur.execute('''SELECT id FROM users WHERE cookie_id = %s''',(rating.cookieid,))
-    id: dict = cur.fetchone()
-    if id == None:
-        cur.execute('''INSERT INTO users (cookie_id) VALUES (%s) RETURNING id''',(rating.cookieid,))
-        id: dict = cur.fetchone()
-    id: str = id['id']
-
-    # Insert value, updates rating if user rated the URL before, returns None if URL doesn't exist in database
-    cur.execute('''WITH data AS (SELECT %s AS id,sk,%s AS rating, url FROM articles WHERE url = %s)
-                    INSERT INTO users_ratings SELECT id,sk,rating from data
-                    ON CONFLICT (user_id,article_id) DO UPDATE SET rating = %s
-                    RETURNING (SELECT url FROM data), rating ;'''
-                    ,(id,rating.rating,rating.url,rating.rating)) 
-
-    con.commit()
-
-    inserted_data = cur.fetchone()
-    if inserted_data == None:
-       raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail = "Invalid url")
-    return inserted_data
-
-#SELECT u.cookie_id, a.url, r.rating
-#FROM users_ratings r
-#INNER JOIN users u ON user_id = u.id
-#INNER JOIN articles a ON article_id = a.sk;
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')

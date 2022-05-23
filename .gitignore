@@ -10,5 +10,6 @@
 !/airflow/data/.gitkeep
 /access_token.txt
 /test.py
-/vennv/**
+/venv/**
 **/__pycache__/
+/api/api2.py
