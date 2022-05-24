@@ -22,7 +22,7 @@ class XmlscraperPipeline:
                             "title": item["title"],
                             "tags": item["tags"],
                             "date": item["date"],
-                            "summary": "dummy text"
+                            "summary": ""
                             })
             if response.status_code == 400:
                 raise KeyError(f'Error {response.status_code} for url {item["url"]}')

@@ -24,10 +24,8 @@ class RatingModel(BaseModel):
         assert value in [0,1,2,3,4,5]
         return value
 
-class Cookie(BaseModel):
+class UserRating(RatingModel):
     cookieid: str
-
-class UserRating(RatingModel, Cookie):
     pass
 
 class Summary(BaseModel):
@@ -36,7 +34,6 @@ class Summary(BaseModel):
 
 class Article(Summary):
     title: str
-    url: str
     text: str
     count: int
     summary: Optional[str]
@@ -49,3 +46,7 @@ class ArticlesResponse(Article):
 
 class Articles(BaseModel):
     __root__: Dict[str,ArticlesResponse]
+
+class Recommendation(BaseModel):
+    cookieid: str
+    url: str
