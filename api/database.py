@@ -28,7 +28,6 @@ def initialize_db():
                     FOREIGN KEY (user_id) REFERENCES users(id),
                     FOREIGN KEY (article_id) REFERENCES articles(sk)
                     );''')
-    cur.execute('''ALTER TABLE recommendations ADD COLUMN date DATE DEFAULT CURRENT_DATE''')
     cur.execute('''CREATE TABLE IF NOT EXISTS recommendations(
                     user_id INT CONSTRAINT not_found NOT NULL,
                     article_id INT CONSTRAINT not_found NOT NULL,

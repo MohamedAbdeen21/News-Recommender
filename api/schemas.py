@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator
 from datetime import datetime, date
-from typing import Dict, Optional
+from typing import List, Optional
 
 def valid_date(date: str) -> bool:
     FORMAT = "%Y-%m-%d"
@@ -26,7 +26,6 @@ class RatingModel(BaseModel):
 
 class UserRating(RatingModel):
     cookieid: str
-    pass
 
 class Summary(BaseModel):
     url: str
@@ -45,7 +44,7 @@ class ArticlesResponse(Article):
     summary: str
 
 class Articles(BaseModel):
-    __root__: Dict[str,ArticlesResponse]
+    list: List[ArticlesResponse]
 
 class Recommendation(BaseModel):
     cookieid: str

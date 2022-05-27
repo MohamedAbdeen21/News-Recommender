@@ -13,3 +13,5 @@
 /venv/**
 **/__pycache__/
 /api/api2.py
+/website/**
+/postgres_data/**

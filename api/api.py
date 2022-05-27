@@ -1,8 +1,6 @@
 from fastapi import FastAPI, status, HTTPException, Header
 from fastapi.responses import RedirectResponse
 from time import sleep
-
-from psycopg2 import IntegrityError
 import api.database as database
 import api.schemas as schemas
 
@@ -35,7 +33,8 @@ def get_articles_by_day(date: str):
                             detail = "Invalid date, make sure you follow the format 'YYYY-MM-DD' and using a valid date")
 
     cur.execute('''SELECT url, title, text, count, date, tags, summary FROM articles WHERE date = %s''',(date,))
-    return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
+    return {"list":cur.fetchall(),}
+    # return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
 
 @app.get('/', status_code=status.HTTP_200_OK )
 def get_recommendations(cookieid: schemas.Optional[str] = Header(default=None)):

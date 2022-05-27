@@ -10,7 +10,7 @@ The project uses:
 - Docker to make both installation and development easier. The project uses many services like postgres, pgadmin, airflow UI, an api for the database (to do), starting all of them with a single line saves a lot of effort.
 - Flask api to integrate the database easily with ML models and the web frontend (to do).
 
-The project was challenging on so many levels. Reducing the scraping time of hundreds of articles to a few minutes was the major challenge that led me to choose scrapy for the project, and scrapy took me some time to learn. The ability to continue working across the different OS on my device led me to Docker and Docker-compose; it saved me alot of trouble that I figured that I would include it in the final version of the project.
+The project was challenging on so many levels. Reducing the scraping time of hundreds of articles to a few minutes was the major challenge that led me to choose scrapy for the project, and scrapy took me some time to learn. The ability to continue working across the different OS installed on my device led me to Docker and Docker-compose; it saved me alot of trouble that I figured that I would include it in the final version of the project.
 
 ---
 
@@ -44,11 +44,15 @@ With some simple knowledge in docker, you can change these login credentials and
 
 Note: You might need to `chown` of the `data/pgadmin` directory to `5050:5050` to be able to start `pgadmin` service. Changes like copying the project or adding it to github might require you to `chown` of the entire directory `.` to your user. Don't forget the `-R` flag.
 
+---
+
 ## Credits
 
 These are some of the people who helped me through their content to create this project:
 - Scrapy: John Watson Rooney [YouTube](https://www.youtube.com/c/JohnWatsonRooney)
 - Docker and docker-compose: [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/?originalSubdomain=de) from [DataTalksClub](https://www.youtube.com/channel/UCDvErgK0j5ur3aLgn6U-LqQ) 
+
+---
 
 ## DISCLAIMER
 
