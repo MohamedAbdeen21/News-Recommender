@@ -79,7 +79,6 @@ def post_article(article_data: schemas.Article):
         cur.execute("""INSERT INTO articles(url,title,text,count,tags,summary,date) VALUES(%s,%s,%s,%s,%s,%s,%s)""",
                 [article_data.url,article_data.title,article_data.text,article_data.count,article_data.tags,article_data.summary,article_data.date])
         con.commit()
-        print('Added article')
     except KeyError as exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                         detail=f"Item {article_data.url} had no key {repr(exception)}")

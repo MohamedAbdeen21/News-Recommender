@@ -15,3 +15,7 @@
 /api/api2.py
 /website/**
 /postgres_data/**
+/.vscode/**
+/models/transformers/**
+!/models/transformers/.gitkeep
+/models/start.sh

@@ -241,6 +241,7 @@ services:
     user: "0:0"
     volumes:
       - ./airflow/:/sources
+      - ./transformers:/home/airflow/.cache/huggingface/:z
 
   airflow-cli:
     <<: *airflow-common
@@ -279,8 +280,8 @@ services:
       - POSTGRES_DB=newsscraper
     volumes:
       - "./data/postgres_data:/var/lib/postgresql/data:rw"
-    logging:
-      driver: none
+    command: ["postgres", "-c", "logging_collector=on"]
+
 
   pgadmin:
     image: dpage/pgadmin4
@@ -290,7 +291,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./data/pgadmin:/var/lib/pgadmin
+      - ./data/pgadmin:/var/lib/pgadmin:z
     depends_on:
       - pgdatabase
 
@@ -299,8 +300,23 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - redis
       - pgdatabase
+
+  models:
+    build: models/.
+    environment:
+      - NVIDIA_DISABLE_REQUIRE=1
+    expose:
+      - 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    depends_on:
+      - api
+    volumes:
+      - ./models/transformers:/root/.cache/huggingface/transformers:rw
 
 volumes:
   postgres-db-volume: 
