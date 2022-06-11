@@ -44,8 +44,11 @@ class ArticlesResponse(Article):
     summary: str
 
 class Articles(BaseModel):
-    list: List[ArticlesResponse]
+    __root__ : List[ArticlesResponse]
 
 class Recommendation(BaseModel):
     cookieid: str
     url: str
+
+class Success(BaseModel):
+    success: str

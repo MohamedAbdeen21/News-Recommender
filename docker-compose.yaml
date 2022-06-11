@@ -301,6 +301,29 @@ services:
       - "8000:8000"
     depends_on:
       - pgdatabase
+    volumes:
+      - ./api/:/code/api:rw
+
+  models:
+    build: models/.
+    environment:
+      - NVIDIA_DISABLE_REQUIRE=1
+    ports:
+      - 9000:8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    depends_on:
+      - api
+    volumes:
+      - ./models/transformers:/root/.cache/huggingface/transformers:rw
+  
+  frontend:
+    build: frontend/.
+    ports:
+      - 3000:80
 
   models:
     build: models/.

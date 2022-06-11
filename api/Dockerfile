@@ -6,4 +6,4 @@ RUN pip install fastapi[all] psycopg2-binary
 
 COPY . /code/api
 
-CMD ["uvicorn", "api.api:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "api.api:app", "--host", "0.0.0.0","--reload"]
