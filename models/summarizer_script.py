@@ -1,37 +1,21 @@
 import requests
-<<<<<<< HEAD
-from transformers import BartForConditionalGeneration, BartTokenizer
-from datetime import datetime, timedelta
-today = datetime.date(datetime.today() - timedelta(days = 1))
-today_string = datetime.strftime(today, '%Y-%m-%d')
-
-def run():
-=======
 import torch
 from transformers import BartForConditionalGeneration, BartTokenizer
 from datetime import datetime, timedelta
 today = datetime.date(datetime.today() - timedelta(days = 1) + timedelta(hours = 2))
 today_string = datetime.strftime(today, '%Y-%m-%d')
-torch.cuda.empty_cache() # an attempt to avoid "CUDA out of memory" error; however, it is recommended to reduce batch size
+torch.cuda.empty_cache() # an attempt to avoid "CUDA out of memory" error; however, it is recommended to reduce batch size.
 
 def run(date = today_string):
->>>>>>> 84798cc (diagram, api endpoints, models)
     #Intilizing the BART model 
     model =  BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn").to('cuda:0')
     #intializing text tokenizer
     tokenizer = BartTokenizer.from_pretrained("facebook/bart-base")
     #obtain the days articles from the api. The date continously change using format and datetime libraries
-<<<<<<< HEAD
-    d = "http://api:8000/articles/{}".format(today_string)
-    req = requests.get(d)
-
-    j_data = req.json()["list"]
-=======
     d = "http://api:8000/articles/{}".format(date)
     req = requests.get(d)
 
     j_data = req.json()
->>>>>>> 84798cc (diagram, api endpoints, models)
 
     if j_data != {}:
         
@@ -41,16 +25,10 @@ def run(date = today_string):
         
         #Putting the json file contents in lists
         for key in j_data:
-<<<<<<< HEAD
-            url.append(key["url"])
-            articles.append(key["text"])
-            count.append(key["count"])
-=======
             if key["summary"] == '':
-              url.append(key["url"])
-              articles.append(key["text"])
-              count.append(key["count"])
->>>>>>> 84798cc (diagram, api endpoints, models)
+                url.append(key["url"])
+                articles.append(key["text"])
+                count.append(key["count"])
 
 
     #The following piece of code summarizes the articles
@@ -84,7 +62,7 @@ def run(date = today_string):
         data["url"] = url[num]
         data["summary"] = sums[num]
         num += 1
-        send = requests.post('http://api:8000/summary/', json = data)
+        requests.post('http://api:8000/summary/', json = data)
       return
 
     if j_data != {}:

@@ -1,21 +1,21 @@
 from diagrams import Diagram, Cluster, Edge
+from diagrams.programming.framework import FastAPI
 from diagrams.custom import Custom
 from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.workflow import Airflow
-from diagrams.programming.framework import FastAPI
 from diagrams.programming.flowchart import Database
 from diagrams.programming.language import JavaScript
+from diagrams.onprem.workflow import Airflow
 
 with Diagram(direction="TB"):
-    with Cluster("Docker",direction="LR",graph_attr={"labeljust":"R"}):
+    with Cluster("Docker Compose",direction="LR",graph_attr={"labeljust":"R"}):
 
         with Cluster("Airflow\nlocalhost:8080","LR",graph_attr={"labeljust":"R"}):
             airflow = Airflow()
             scrapy = Custom("(1)\nScrapy","./scrapy.png")
-            with Cluster("container","LR",graph_attr={"labeljust":"R"}):
+            with Cluster("container","LR", graph_attr={"labeljust":"R"}):
                 api2 = FastAPI("models:8000")
-                summarizer = Custom("\n(2)\nSummarizer","./torch.png")
-                recommender = Custom("\n(3)\nRecommender","./torch.png")
+                summarizer = Custom("\n(3)\nRecommender","./torch.png")
+                recommender = Custom("\n(2)\nSummarizer","./torch.png")
 
                 api2 >> recommender 
                 api2 >> summarizer
@@ -42,6 +42,3 @@ with Diagram(direction="TB"):
     Edge(node = js, reverse=True, forward=True) >> api
     Edge(node = api, reverse=True, forward=True) >> db
     Edge(node = db, reverse=True, forward=True) >> pgadmin
-
-with Diagram(direction="TB"):
-    js = JavaScript()

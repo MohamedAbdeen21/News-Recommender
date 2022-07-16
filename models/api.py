@@ -1,24 +1,32 @@
 from fastapi import FastAPI, status
 import summarizer_script as summarizer
-# import recommedation_script as recommender
+import LDA_Generation as recommender
+import LDA_Training as trainer
 
 app = FastAPI()
 
 @app.get('/summarizer/', status_code=status.HTTP_200_OK)
-async def summarize():
+def summarize():
     summarizer.run()
     return
 
-<<<<<<< HEAD
-=======
 # Provide a custom date, in case an error occurred and a day was skipped 
-@app.get('/summarizer_custom/{date}', status_code=status.HTTP_200_OK)
-async def summarize(date: str):
+@app.get('/summarizer_custom/{date}/', status_code=status.HTTP_200_OK)
+def summarize(date: str):
     summarizer.run(date)
     return
 
->>>>>>> 84798cc (diagram, api endpoints, models)
 @app.get('/recommender/', status_code=status.HTTP_200_OK)
 def recommend():
-    # recommender.run()
+    recommender.run()
+    return
+
+@app.get('/recommender_custom/{date}/', status_code=status.HTTP_200_OK)
+def recommend(date: str):
+    recommender.run(date)
+    return
+
+@app.get('/trainer/',status_code=status.HTTP_200_OK)
+def train():
+    trainer.run()
     return

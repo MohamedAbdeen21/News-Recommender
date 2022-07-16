@@ -139,6 +139,8 @@ header svg {
 }
 
 .article .title {
+  text-decoration: none;
+  color: black;
   padding-top: 20px;
   margin-left: .7em;
   margin-right: .7em;
@@ -159,6 +161,11 @@ header svg {
   -o-object-fit: cover;
      object-fit: cover;
 }
+.article .artbody a{
+  color: black;
+  text-decoration: none;
+}
+
 
 .article .artbody #ref_title:visited {
   color: black !important;
@@ -183,9 +190,12 @@ header svg {
 }
 
 .close-nav {
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
-}
+  align-content: flex;
+  h1{
+      text-decoration: none;
+      color: black;
+-webkit-transform: translateX(100%);
+          transform: translateX(100%);}}
 
 @media only screen and (min-width: 920px) {
   body {
@@ -241,14 +251,13 @@ header svg {
     max-width: 20%;
   }
   .article {
-    margin-top: -.7em;
+    margin-top: em;
     margin-bottom: .7em;
-    float: right;
     background-color: #EEEEEE;
     -ms-flex-line-pack: flex;
         align-content: flex;
   }
-  .article .artbody {
+  .artbody {
     background-color: #E5E5E5;
     border-radius: 25px;
     display: -webkit-box;
@@ -260,6 +269,10 @@ header svg {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+  }
+  .article a{
+    text-decoration: none;
+    color: black;
   }
 }
 
