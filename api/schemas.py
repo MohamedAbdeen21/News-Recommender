@@ -47,8 +47,16 @@ class Articles(BaseModel):
     __root__ : List[ArticlesResponse]
 
 class Recommendation(BaseModel):
-    cookieid: str
+    groupid: str
     url: str
 
 class Success(BaseModel):
-    success: str
+    message: str
+
+class HistoryRecord(BaseModel):
+    cookie_id: str
+    text: str
+    url: str
+
+class History(BaseModel):
+    __root__: List[HistoryRecord]

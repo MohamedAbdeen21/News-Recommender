@@ -1,9 +1,10 @@
-from fastapi import FastAPI, status, HTTPException, Header
+from fastapi import FastAPI, status, HTTPException
 from fastapi.responses import RedirectResponse
 from time import sleep
 import api.database as database
 import api.schemas as schemas
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg2.extensions import AsIs
 
 app = FastAPI()
 origins = ["*"] # Allow all origins
@@ -11,7 +12,7 @@ origins = ["*"] # Allow all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -42,84 +43,101 @@ def get_articles_by_day(date: str):
                             detail = "Invalid date, make sure you follow the format 'YYYY-MM-DD' and using a valid date")
 
     cur.execute('''SELECT url, title, text, count, date, tags, summary FROM articles WHERE date = %s''',(date,))
-    return cur.fetchall()
+    data = cur.fetchall()
+    if data == []:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return data
     # return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
 
-@app.get('/', status_code=status.HTTP_200_OK)
-def get_recommendations(cookieid: schemas.Optional[str] = Header(default=None)):
+@app.get('/{cookieid}', status_code=status.HTTP_200_OK, response_model=schemas.Articles)
+def get_recommendations(cookieid: str):
     # First time user
-    if cookieid == "" or cookieid == None:
-        return {"message":"welcome to our website"}
-    else:
-        cur.execute('''WITH user_data AS (SELECT group_id FROM users WHERE cookie_id = %s)
-                        SELECT url, title, summary, tags 
+    try:
+        cur.execute('''WITH group_data AS (SELECT group_id AS id FROM users WHERE cookie_id = %s)
+                        SELECT url, title, text, count, a.date, summary, tags
                         FROM articles AS a
                         JOIN recommendations AS r 
                         ON r.article_id = a.sk
-                        WHERE r.group_id = (SELECT id FROM user_data) ''',
+                        WHERE r.group_id = (SELECT id FROM group_data) ''',
                         (cookieid,))
-        return {"list":cur.fetchall(),}
+        return cur.fetchall()
+    except Exception as e:
+        con.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(e)}")
         # return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
     
-@app.get('/groupof/{user_id}',status_code=status.HTTP_200_OK)
-def get_group_data_by_userid(cookieid: str):
-    try:
-        cur.execute('''WITH groupid AS (SELECT id AS ids FROM users WHERE group_id = %s)
-                        SELECT a.url, a.title, a.tags, a.summary, a.date 
-                        FROM articles AS a
-                        INNER JOIN users_ratings AS ur
-                        ON ur.url = a.url
-                        WHERE ur.user_id IN groupid.ids
-                        ''',(cookieid,))
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(e)}")
+#@app.get('/group_of/{cookie_id}',status_code=status.HTTP_200_OK)
+#def get_group_data_by_userid(cookieid: str):
+#    try:
+#        cur.execute('''WITH groupid AS (SELECT id AS ids FROM users WHERE group_id = 
+#                            (SELECT group_id FROM users WHERE cookie_id = %s))
+#                        SELECT a.url, a.title, a.tags, a.summary, a.date 
+#                        FROM articles AS a
+#                        INNER JOIN users_ratings AS ur
+#                        ON ur.url = a.url
+#                        WHERE ur.user_id IN groupid.ids
+#                        ''',(cookieid,))
+#    except Exception as e:
+#        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(e)}")
 
 
-@app.get('/users_history/',status_code=status.HTTP_200_OK)
+
+@app.get('/users_history/',status_code=status.HTTP_200_OK, response_model=schemas.History)
 def get_users_history():
     try:
-        cur.execute('''SELECT u.user_id, a.text, a.url
-                        FROM users_ratings AS u
+        cur.execute('''SELECT u.cookie_id, a.text, a.url
+                        FROM users_ratings AS r
                         INNER JOIN articles AS a
-                        ON a.sk = u.article_id
+                        ON a.sk = r.article_id
+                        INNER JOIN users AS u 
+                        ON u.id = r.user_id
                     ''')
-        data = cur.fetchall()
-        return data
+        return cur.fetchall()
     except Exception as exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(exception)}")
 
 @app.get('/all/',status_code=status.HTTP_200_OK, response_model = schemas.Articles)
-def get_all():
+def get_all_articles():
     cur.execute('''
                 SELECT * FROM articles
                 ''')
     return cur.fetchall()
 
+@app.patch('/update_group/{cookie_id}/{group_id}', status_code=status.HTTP_201_CREATED, response_model=schemas.Success)
+def update_user_group(cookie_id: str, group_id: str):
+    cur.execute('''UPDATE users SET group_id = %s WHERE cookie_id = %s RETURNING *''',(AsIs(int(group_id)),cookie_id))
+    con.commit()
+    data = cur.fetchall()
+    if data == []:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return {"message":"success"}
+
 @app.post('/recommend/',status_code=status.HTTP_201_CREATED, response_model = schemas.Success)
 def post_recommendation(recommendation: schemas.Recommendation):
     try:
-        cur.execute('''WITH article_data AS (SELECT sk AS id FROM articles WHERE url = %s),
-                             user AS (SELECT group_id AS id FROM users WHERE cookie_id = %s)
-                        INSERT INTO recommendations SELECT (SELECT id FROM user), (SELECT id from article_data)'''
-                        ,(recommendation.url,recommendation.cookieid))
+        cur.execute('''WITH article_data AS (SELECT sk AS id FROM articles WHERE url = %s)
+                        INSERT INTO recommendations VALUES (%s, (SELECT id from article_data))'''
+                        ,(recommendation.url,AsIs(recommendation.groupid)))
         con.commit()
         return {"message":"success"}
     except Exception as exception:
+        print(repr(exception))
         con.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                         detail=f"{repr(exception)}")
 
-@app.post('/summary/',status_code=status.HTTP_201_CREATED)
+@app.post('/summary/',status_code=status.HTTP_201_CREATED, response_model = schemas.Success)
 def post_summary(summary: schemas.Summary):
     cur.execute('''UPDATE articles SET summary=%s WHERE url = %s RETURNING *''',(summary.summary,summary.url))
     con.commit()
     result = cur.fetchone()
     if result == None:
+        con.rollback()
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail = f"url {summary.url} not in database")
-    return result
+    return {"message":"success"}
 
-@app.post('/articles/',status_code=status.HTTP_201_CREATED)
+@app.post('/articles/',status_code=status.HTTP_201_CREATED, response_model = schemas.Success)
 def post_article(article_data: schemas.Article):
     try:
         cur.execute("""INSERT INTO articles(url,title,text,count,tags,summary,date) VALUES(%s,%s,%s,%s,%s,%s,%s)""",
@@ -132,11 +150,10 @@ def post_article(article_data: schemas.Article):
         con.rollback()
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                         detail = f'Pipeline raised a {repr(exception)}')
-    return {"data":"success"}
+    return {"message":"success"}
 
-@app.post('/rating/', status_code=status.HTTP_201_CREATED, response_model= schemas.RatingModel)
+@app.post('/rating/', status_code=status.HTTP_201_CREATED, response_model= schemas.Success)
 def post_rating(rating: schemas.UserRating):
-    
     try:
         # Get userId associated with cookieId
         cur.execute('''SELECT id FROM users WHERE cookie_id = %s''',(rating.cookieid,))
@@ -154,7 +171,7 @@ def post_rating(rating: schemas.UserRating):
                         ,(id,rating.rating,rating.url,rating.rating)) 
 
         con.commit()
-    except:
+    except Exception as e:
         con.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail = "bad input")
 
@@ -162,4 +179,4 @@ def post_rating(rating: schemas.UserRating):
     if inserted_data == None:
        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail = "Invalid url")
-    return inserted_data
+    return {"message":"success"}
