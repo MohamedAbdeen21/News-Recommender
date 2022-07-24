@@ -1,4 +1,4 @@
-# Dockered-news-scraper
+# News-Recommender
 
 This is a project to scrape as many news articles as possible, made for CSE321 Project Based Learning course. The list of websites currently include: Vox, BBC, Washington Post, New York Times, Fox News, The Guardian.
 
@@ -22,7 +22,7 @@ The project was challenging on so many levels. Reducing the scraping time of hun
 
 ## Data model
 
-![](./diagram/data_model.jpeg)
+![](./diagram/data_model.png)
 
 ## Features-to-implement:
 - &#9745; Create an API for the database: As I mentioned earlier, this will make integrating the project easier.
