@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, HTTPException
+fro fastapi import FastAPI, status, HTTPException
 from fastapi.responses import RedirectResponse
 from time import sleep
 import api.database as database
@@ -16,6 +16,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # Attempt DB connection and creating the tables
 while True:
     try:
@@ -31,10 +32,6 @@ while True:
 def this_page():
     return RedirectResponse("/docs")
 
-#@app.get('/articles/', status_code=status.HTTP_200_OK)
-#def get_posts():
-#    return {"data":"this is the first article"}
-
 @app.get('/articles/{date}',response_model=schemas.Articles)
 def get_articles_by_day(date: str):
 
@@ -47,7 +44,6 @@ def get_articles_by_day(date: str):
     if data == []:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return data
-    # return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
 
 @app.get('/{cookieid}', status_code=status.HTTP_200_OK, response_model=schemas.Articles)
 def get_recommendations(cookieid: str):
@@ -64,23 +60,6 @@ def get_recommendations(cookieid: str):
     except Exception as e:
         con.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(e)}")
-        # return {f"article{i}":k for i,k in enumerate(cur.fetchall())}
-    
-#@app.get('/group_of/{cookie_id}',status_code=status.HTTP_200_OK)
-#def get_group_data_by_userid(cookieid: str):
-#    try:
-#        cur.execute('''WITH groupid AS (SELECT id AS ids FROM users WHERE group_id = 
-#                            (SELECT group_id FROM users WHERE cookie_id = %s))
-#                        SELECT a.url, a.title, a.tags, a.summary, a.date 
-#                        FROM articles AS a
-#                        INNER JOIN users_ratings AS ur
-#                        ON ur.url = a.url
-#                        WHERE ur.user_id IN groupid.ids
-#                        ''',(cookieid,))
-#    except Exception as e:
-#        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{repr(e)}")
-
-
 
 @app.get('/users_history/',status_code=status.HTTP_200_OK, response_model=schemas.History)
 def get_users_history():

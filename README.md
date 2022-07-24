@@ -20,8 +20,11 @@ The project was challenging on so many levels. Reducing the scraping time of hun
 
 ![](./diagram/diagrams_image.png)
 
+## Data model
+
+![](./diagram/data_model.jpeg)
+
 ## Features-to-implement:
-- &#9744; Create a better data model: The current data model only cares about saving the articles. A better model would be needed if the project was to be implemented in an application.
 - &#9745; Create an API for the database: As I mentioned earlier, this will make integrating the project easier.
 - &#9745; Create a web frontend: I had a very basic frontend made with HTML, CSS and Flask in the [un-dockerized version](https://github.com/MohamedAbdeen21/NewNews) of the repo, but I decided not to include it in here until it is more mature.
 
@@ -30,7 +33,7 @@ The project was challenging on so many levels. Reducing the scraping time of hun
 ## Installation and running
 Note that because this project has ML models for summarization and recommendation both containerized, the project works best on the OS mentioned [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). I used Ubuntu 20.04 for this project. 
 
-Just download [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) from the official docker website, clone the repo, move to the top-level directory and run ```sudo docker-compose up``` or ```sudo docker compose up``` depending on your installation of docker compose.
+Just download [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/) from the official docker website, clone the repo, move to the top-level directory and run `sudo docker-compose up` or `sudo docker compose up` depending on your installation of docker compose.
 
 This will start pgAdmin on port 8081 with login credentials `admin@admin.com` and `root`, start a server and add the following connection credentials:
 ```
