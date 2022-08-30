@@ -1,10 +1,10 @@
-fro fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException
 from fastapi.responses import RedirectResponse
-from time import sleep
 import api.database as database
 import api.schemas as schemas
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg2.extensions import AsIs
+from time import sleep
 
 app = FastAPI()
 origins = ["*"] # Allow all origins
@@ -139,8 +139,8 @@ def post_rating(rating: schemas.UserRating):
         id: dict = cur.fetchone()
         if id == None:
             cur.execute('''INSERT INTO users (cookie_id) VALUES (%s) RETURNING id''',(rating.cookieid,))
-            id: dict = cur.fetchone()
-        id: str = id['id']
+            id = cur.fetchone()
+        id = id['id']
 
         # Insert value, updates rating if user rated the URL before, returns None if URL doesn't exist in database
         cur.execute('''WITH data AS (SELECT %s AS id,sk,%s AS rating, url FROM articles WHERE url = %s)
