@@ -22,11 +22,9 @@ The project was challenging on so many levels. Reducing the scraping time of hun
 
 ## Data model
 
-![](./diagram/data_model.png)
+This is a very basic model that was intended to simply store the data effictively.
 
-## Features-to-implement:
-- &#9745; Create an API for the database: As I mentioned earlier, this will make integrating the project easier.
-- &#9745; Create a web frontend: I had a very basic frontend made with HTML, CSS and Flask in the [un-dockerized version](https://github.com/MohamedAbdeen21/NewNews) of the repo, but I decided not to include it in here until it is more mature.
+![](./diagram/data_model.png)
 
 ---
 
@@ -52,16 +50,3 @@ With some simple knowledge in docker, you can change these login credentials and
 Note: You might need to `chown` of the `data/pgadmin` directory to `5050:5050` to be able to start `pgadmin` service. Changes like copying the project or adding it to github might require you to `chown` of the entire directory `.` to your user. Don't forget the `-R` flag.
 
 ---
-
-## Credits
-This project was a team effort between me and [a-alnagar](https://github.com/a-alnagar). He provided both the summarizer and the recommender, and the entire frontend.
-
-These are some of the people who helped me through their content to create this project:
-- Scrapy: John Watson Rooney [YouTube](https://www.youtube.com/c/JohnWatsonRooney)
-- Docker and docker-compose: [Alexey Grigorev](https://www.linkedin.com/in/agrigorev/?originalSubdomain=de) from [DataTalksClub](https://www.youtube.com/channel/UCDvErgK0j5ur3aLgn6U-LqQ) 
-
----
-
-## DISCLAIMER
-
-The project scrapes the data once a day to avoid overwhelming the websites. I am not responsible for any malicious activity that this project is used in. This project was made as a learning experience for me and not intended to be used in an industrial environment. 

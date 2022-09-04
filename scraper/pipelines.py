@@ -7,11 +7,7 @@
 # useful for handling different item types with a single interface
 # from itemadapter import ItemAdapter
 
-<<<<<<< HEAD
 import psycopg2 as pg
-=======
->>>>>>> 84798cc (diagram, api endpoints, models)
-import requests
 
 class XmlscraperPipeline:
     def process_item(self, item, spider):
