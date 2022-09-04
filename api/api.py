@@ -136,7 +136,7 @@ def post_rating(rating: schemas.UserRating):
     try:
         # Get userId associated with cookieId
         cur.execute('''SELECT id FROM users WHERE cookie_id = %s''',(rating.cookieid,))
-        id: dict = cur.fetchone()
+        id  = cur.fetchone()
         if id == None:
             cur.execute('''INSERT INTO users (cookie_id) VALUES (%s) RETURNING id''',(rating.cookieid,))
             id = cur.fetchone()
