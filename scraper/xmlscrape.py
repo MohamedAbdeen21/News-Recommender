@@ -5,8 +5,6 @@ import properties as properties
 from datetime import datetime
 from dateutil import parser as timeparser
 
-from scrapy.utils.project import get_project_settings
-from scrapy.crawler import CrawlerProcess
 from scrapy.loader import ItemLoader
 from scrapy.http import TextResponse
 
